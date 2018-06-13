@@ -14,7 +14,15 @@ What you can do with it?
 * Add To-Dos and descriptions
 * Sync To-Dos with your Habitica account
 
-
 <img src="https://raw.githubusercontent.com/Aekschen/Habitica-Offline-Android/master/docs/sync.jpg" height="400" alt="sync">
+
+Where can I download the app?
+----------------------
+* Infos will be added soon
+
+How can I build the app myself?
+----------------------
+* Infos will be added soon - Buildozer
+
 
 Thats it, have fun! :)
