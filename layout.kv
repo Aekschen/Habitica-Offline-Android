@@ -1,0 +1,197 @@
+#:import Toolbar kivymd.toolbar.Toolbar
+#:import ThemeManager kivymd.theming.ThemeManager
+#:import MDNavigationDrawer kivymd.navigationdrawer.MDNavigationDrawer
+#:import NavigationLayout kivymd.navigationdrawer.NavigationLayout
+#:import NavigationDrawerDivider kivymd.navigationdrawer.NavigationDrawerDivider
+#:import NavigationDrawerToolbar kivymd.navigationdrawer.NavigationDrawerToolbar
+#:import NavigationDrawerSubheader kivymd.navigationdrawer.NavigationDrawerSubheader
+#:import MDCheckbox kivymd.selectioncontrols.MDCheckbox
+#:import MDSwitch kivymd.selectioncontrols.MDSwitch
+#:import MDList kivymd.list.MDList
+#:import OneLineListItem kivymd.list.OneLineListItem
+#:import TwoLineListItem kivymd.list.TwoLineListItem
+#:import ThreeLineListItem kivymd.list.ThreeLineListItem
+#:import OneLineAvatarListItem kivymd.list.OneLineAvatarListItem
+#:import OneLineIconListItem kivymd.list.OneLineIconListItem
+#:import OneLineAvatarIconListItem kivymd.list.OneLineAvatarIconListItem
+#:import MDTextField kivymd.textfields.MDTextField
+#:import MDSpinner kivymd.spinner.MDSpinner
+#:import MDCard kivymd.card.MDCard
+#:import MDSeparator kivymd.card.MDSeparator
+#:import MDDropdownMenu kivymd.menu.MDDropdownMenu
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import colors kivymd.color_definitions.colors
+#:import SmartTile kivymd.grid.SmartTile
+#:import MDSlider kivymd.slider.MDSlider
+#:import MDTabbedPanel kivymd.tabs.MDTabbedPanel
+#:import MDTab kivymd.tabs.MDTab
+#:import MDProgressBar kivymd.progressbar.MDProgressBar
+#:import MDAccordion kivymd.accordion.MDAccordion
+#:import MDAccordionItem kivymd.accordion.MDAccordionItem
+#:import MDAccordionSubItem kivymd.accordion.MDAccordionSubItem
+#:import MDThemePicker kivymd.theme_picker.MDThemePicker
+#:import MDBottomNavigation kivymd.tabs.MDBottomNavigation
+#:import MDBottomNavigationItem kivymd.tabs.MDBottomNavigationItem
+
+NavigationLayout:
+    id: nav_layout
+    MDNavigationDrawer:
+        id: nav_drawer
+        NavigationDrawerToolbar:
+            title: "Menu"
+        NavigationDrawerIconButton:
+            icon: 'checkbox-blank-circle'
+            text: "To-Dos"
+            on_release: app.root.ids.scr_mngr.current = 'todos'
+        NavigationDrawerIconButton:
+            icon: 'checkbox-blank-circle'
+            text: "Settings"
+            on_release: app.root.ids.scr_mngr.current = 'settings'
+        NavigationDrawerIconButton:
+            icon: 'checkbox-blank-circle'
+            text: "About"
+            on_release: app.root.ids.scr_mngr.current = 'about'
+    BoxLayout:
+        orientation: 'vertical'
+        Toolbar:
+            id: toolbar
+            title: 'Habitica Offline To-Dos'
+            md_bg_color: 0.25, 0.17, 0.56, 1
+            background_palette: 'DeepPurple'
+            background_hue: '800'
+            left_action_items: [['menu', lambda x: app.root.toggle_nav_drawer()]]
+            right_action_items: [['refresh', lambda x: app.syncItemsWithHabitica()]]
+
+
+        ScreenManager:
+            id: scr_mngr
+            Screen:
+                name: 'todos'
+                ScrollView:
+                    do_scroll_x: False
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(20)
+
+                        MDTextField:
+                            id: todo_name_field
+                            hint_text: "To-Do subject"
+                            write_tab: False
+
+                        MDTextField:
+                            id: todo_description_field
+                            hint_text: "To-Do description"
+                            helper_text: "Add additional descriptions here or leave blank"
+                            helper_text_mode: "on_focus"
+                            write_tab: False
+                            multiline: True
+
+                        MDRaisedButton:
+                            text: "Add To-Do item"
+                            elevation_normal: 2
+                            opposite_colors: True
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+                            on_release: app.addItem()
+
+                        MDList:
+                            id: ml
+                            padding: [dp(-20),dp(0),dp(5),dp(0)]
+
+
+            Screen:
+                name: 'settings'
+                ScrollView:
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(48)
+                        spacing: 40
+
+                        MDLabel:
+                            font_style: 'Caption'
+                            theme_text_color: 'Primary'
+                            text: "You can find your API-token and user-ID at https://habitica.com/user/settings/api"
+                            halign: 'left'
+                            size_hint_y: None
+                            height: self.texture_size[1] + dp(4)
+
+                        MDRaisedButton:
+                            text: "Open Habitica User Profile"
+                            elevation_normal: 2
+                            opposite_colors: True
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+                            on_release: app.openHabiticaBrowser()
+
+                        MDLabel:
+                            font_style: 'Caption'
+                            theme_text_color: 'Error'
+                            text: "Please note that your API-token and user-ID will be saved directly on your phone without encryption! If this is a problem for you don't use this app."
+                            halign: 'left'
+                            size_hint_y: None
+                            height: self.texture_size[1] + dp(4)
+
+                        MDTextField:
+                            id: user_id_field
+                            hint_text: "User ID"
+                            helper_text: "Enter personal User ID here"
+                            helper_text_mode: "persistent"
+                            text: ""
+
+                        MDTextField:
+                            id: api_token_field
+                            hint_text: "API-Token"
+                            helper_text: "Enter personal API key here"
+                            helper_text_mode: "persistent"
+                            text: ""
+
+
+                        MDRaisedButton:
+                            text: "Save and test connection to Habitica"
+                            elevation_normal: 2
+                            opposite_colors: True
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+                            on_release: app.checkHabiticaConnection()
+
+            Screen:
+                name: 'about'
+                ScrollView:
+                    do_scroll_x: False
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(48)
+                        spacing: 40
+
+                        MDLabel:
+                            font_style: 'Caption'
+                            theme_text_color: 'Primary'
+                            text: "Open-source project by Andi Potthast."
+                            halign: 'center'
+                            size_hint_y: None
+                            height: self.texture_size[1] + dp(4)
+
+                        MDRaisedButton:
+                            text: "Open GITHUB Repo"
+                            elevation_normal: 2
+                            opposite_colors: True
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+                            on_release: app.openGithubBrowser()
+
+                        MDLabel:
+                            font_style: 'Caption'
+                            theme_text_color: 'Primary'
+                            text: "Found a bug? Please contribute directly on Github."
+                            halign: 'center'
+                            size_hint_y: None
+                            height: self.texture_size[1] + dp(4)
+
+                        MDRaisedButton:
+                            text: "Open GITHUB Issues"
+                            elevation_normal: 2
+                            opposite_colors: True
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+                            on_release: app.openGithubIssueBrowser()
